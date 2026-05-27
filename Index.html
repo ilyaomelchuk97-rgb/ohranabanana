@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>База знаний по охране труда</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .container {
+            
+            
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            padding: 35px;
+            position: relative;
+            margin: 20px;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            font-size: 32px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        /* Стили для поиска */
+        .search-container {
+            margin-bottom: 25px;
+            position: relative;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 15px 20px;
+            font-size: 18px;
+            border: 2px solid #3498db;
+            border-radius: 50px;
+            outline: none;
+            box-shadow: 0 4px 10px rgba(52, 152, 219, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .search-input:focus {
+            border-color: #2980b9;
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+        }
+        
+        .search-input::placeholder {
+            color: #95a5a6;
+        }
+        
+        .search-info {
+            text-align: center;
+            margin-top: 15px;
+            color: #7f8c8d;
+            font-size: 16px;
+            min-height: 25px;
+        }
+        
+        .btn-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 18px;
+            margin-bottom: 20px;
+        }
+        
+        .btn {
+            background: linear-gradient(to right, #3498db, #2c80c5);
+            color: white;
+            border: none;
+            padding: 18px 25px;
+            text-align: left;
+            border-radius: 12px;
+            font-size: 19px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 4px 8px rgba(52, 152, 219, 0.3);
+        }
+        
+        .btn:hover {
+            background: linear-gradient(to right, #2980b9, #2573ad);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+        
+        .btn:active {
+            transform: translateY(1px);
+        }
+        
+        .btn:before {
+            content: "•";
+            margin-right: 18px;
+            font-size: 30px;
+            font-weight: bold;
+        }
+        
+        .back-btn {
+            background: linear-gradient(to right, #95a5a6, #7f8c8d);
+            color: white;
+            border: none;
+            padding: 13px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            margin-bottom: 15px;
+            transition: all 0.3s;
+            font-size: 17px;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+        }
+        
+        .back-btn:hover {
+            background: linear-gradient(to right, #7f8c8d, #6c7a7b);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 10px rgba(0,0,0,0.15);
+        }
+        
+        .back-btn:before {
+            content: "<-";
+            margin-right: 10px;
+            font-size: 20px;
+        }
+        
+        .section-title {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 12px;
+            margin-bottom: 20px;
+            font-size: 26px;
+            text-align: center;
+        }
+        
+        .screenshots-grid {
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap:20px;
+    align-content: space-between;
+    justify-content: space-evenly;
+    align-items: center;
+    justify-items: center;
+    flex-wrap: nowrap;
+    flex-direction: column;
+        }
+        
+        .screenshot-btn {
+            background: linear-gradient(to bottom, #ecf0f1, #dfe6e9);
+            border: 1px solid #bdc3c7;
+            border-radius: 10px;
+            padding: 18px 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+margin-bottom:20px;
+        }
+        
+        .screenshot-btn:hover {
+            background: linear-gradient(to bottom, #d6dbdf, #c8d0d3);
+            transform: scale(1.05);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+            border-color: #3498db;
+        }
+        
+        .screenshot-btn:before {
+            font-size: 28px;
+            margin-bottom: 12px;
+        }
+        
+        .image-viewer {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.95);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .image-viewer.active {
+            display: flex;
+            opacity: 1;
+        }
+        
+        .image-container {
+            max-width: 90%;
+            max-height: 90%;
+            text-align: center;
+        }
+        
+        .image-container img {
+            max-width: 100%;
+            max-height: 80vh;
+            border: 4px solid white;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        
+        .close-btn {
+            position: absolute;
+            top: 25px;
+            right: 35px;
+            color: white;
+            font-size: 45px;
+            cursor: pointer;
+            transition: color 0.3s;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 50%;
+        }
+        
+        .close-btn:hover {
+            color: #3498db;
+            background: rgba(255,255,255,0.1);
+        }
+        
+        .page {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .active {
+            display: block;
+        }
+        
+        .no-results {
+            text-align: center;
+            color: #e74c3c;
+            font-size: 18px;
+            padding: 20px;
+            grid-column: 1 / -1;
+        }
+        
+        .section-search-container {
+            margin-bottom: 25px;
+        }
+        
+        .section-search-input {
+            width: 100%;
+            padding: 12px 18px;
+            font-size: 16px;
+            border: 2px solid #3498db;
+            border-radius: 50px;
+            outline: none;
+            box-shadow: 0 3px 8px rgba(52, 152, 219, 0.2);
+        }
+        
+        .section-search-info {
+            text-align: center;
+            margin-top: 10px;
+            color: #7f8c8d;
+            font-size: 14px;
+            min-height: 20px;
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px 15px;
+            }
+            
+            h1 {
+                font-size: 26px;
+            }
+            
+            .btn {
+                padding: 15px 20px;
+                font-size: 16px;
+            }
+            
+            .screenshots-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .section-title {
+                font-size: 22px;
+            }
+            
+            .section-search-input {
+                padding: 10px 15px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Главная страница -->
+        <div id="main-page" class="page active">
+            <h1>База знаний по охране труда</h1>
+            
+            <!-- Поисковая строка -->
+            <div class="search-container">
+                <input type="text" id="search-input" class="search-input" 
+                       placeholder="Поиск по разделам...">
+                <div class="search-info" id="search-info"></div>
+            </div>
+            
+            <div class="btn-grid" id="buttons-grid">
+                <button class="btn" onclick="showSection('section1')">ОТ при использовании в работе офисного оборудования</button>
+                <button class="btn" onclick="showSection('section2')">Электробезопасность</button>
+                <button class="btn" onclick="showSection('section3')">Общие вопросы по охране труда</button>
+                
+                <button class="btn" onclick="showSection('section6')">Оказание первой помощи пострадавшим</button>
+            </div>
+        </div>
+
+        <!-- Страницы разделов -->
+        <div id="section1" class="page">
+            <button class="back-btn" onclick="showMainPage()">Назад к разделам</button>
+            <h2 class="section-title">ОТ при использовании офисного оборудования</h2>
+            
+            <!-- Поиск на странице раздела -->
+            <div class="section-search-container">
+                <input type="text" class="section-search-input" 
+                       placeholder="Поиск по скриншотам..."
+                       data-section="section1"
+                       oninput="filterScreenshots('section1', this.value)">
+                <div class="section-search-info" id="search-info-section1"></div>
+            </div>
+            
+            <div class="screenshots-grid" id="screenshots-section1">
+<button class="screenshot-btn" onclick="showImage('ot1.jpg')">Что из перечисленного ниже допускается работающему, при выполнении работ с использованием офисного оборудования</button>
+<button class="screenshot-btn" onclick="showImage('ot2.jpg')">В каких случаях не допускается приступать к работе с использованием офисного оборудования?</button>
+<button class="screenshot-btn" onclick="showImage('ot3.jpg')">Что необходимо сделать по окончании работы с использованием офисного оборудования?</button>
+<button class="screenshot-btn" onclick="showImage('ot4.jpg')">Как поступить нанимателю в случае когда по причинам связанным с особенностями технологического процесса невозможно ограничить до 3 часов в смену продолжительность работы в ПЭВМ женщине со дня установления ее беременности и в период кормления ребенка грудью?</button>
+<button class="screenshot-btn" onclick="showImage('ot5.jpg')">Какой должна быть максимальная продолжительность непрерывной работы в ВДТ, ЭВМ и ПЭВМ без регламентированного перерыва для взрослых пользователей?</button>
+<button class="screenshot-btn" onclick="showImage('ot6.jpg')">К выполнению работ с использованием офисного оборудования допускаются работающие, прошедшие в установленном законодательством порядке</button>
+<button class="screenshot-btn" onclick="showImage('ot7.jpg')">Что из перечисленного ниже, должен сделать работающий с использованием офисного оборудования перед началом работы?</button>
+<button class="screenshot-btn" onclick="showImage('ot8.jpg')">Какие из перечисленных в вариантах ответа факторы относятся к категории опасных и вредных, в процессе использования в работе офисного оборудования?</button>
+<button class="screenshot-btn" onclick="showImage('ot9.jpg')">Какие из перечисленных в вариантах ответа факторы относятся к категории вредных и (или) опасных в процессе использования в работе офисного оборудования?</button>
+<button class="screenshot-btn" onclick="showImage('ot10.jpg')">На каком максимальном расстоянии допускается размещать жкан видеомонитора от глаз работающего?</button>
+<button class="screenshot-btn" onclick="showImage('ot11.jpg')">Какие психофизические факторы относятся к вредным и (или) опасным производственным факторам при выполнении работ с использованием офисного оборудования?</button>
+<button class="screenshot-btn" onclick="showImage('ot12.jpg')">Что должен сделать работающий при обаружении неисправностей офисного оборудования?</button>
+<button class="screenshot-btn" onclick="showImage('ot13.jpg')">Работающему с использованием офисного оборудования перед началом работы следует</button>
+<button class="screenshot-btn" onclick="showImage('ot14.jpg')">Разрешается ли работа на персональных компьютерах при рядном расположении рабочих мест экранами видеомониторов друг к другу?</button>
+<button class="screenshot-btn" onclick="showImage('ot15.jpg')">Какие регламентированные перерывы должны устанавливаться при двенадцатичасовом рабочем дне (смене) и работе на ВДТ, ЭВМ и ПЭВМ?</button>
+<button class="screenshot-btn" onclick="showImage('ot16.jpg')">Что долже выполнять работник в овремя работы с использованием офисного оборудования?</button>
+<button class="screenshot-btn" onclick="showImage('ot17.jpg')">Являются ли повышенная яркость света, прямая и отраженная блесткость вредными и (или) опасными производственными факторами в процессе использования в работе офисного оборудования?</button>
+<button class="screenshot-btn" onclick="showImage('ot18.jpg')">Работающий вправе периодически прерывать работу за экраном видеомонитора на регламентированные перерывы, в случае их установления для</button>
+<button class="screenshot-btn" onclick="showImage('ot19.jpg')">Каким должно быть минимальное расстояние между боковыми поверхностями видеомониторов при размещении рабочих мест с ВДТ, ЭВМ и ПЭВМ?</button>
+<button class="screenshot-btn" onclick="showImage('ot20.jpg')">Что запрещается работнику при выполнении работ с использованием офисного оборудования?</button>
+<button class="screenshot-btn" onclick="showImage('ot21.jpg')">Что из указанного в вариантах ответа запрещается работнику при выполнении работ с использованием офисного оборудования?</button>
+<button class="screenshot-btn" onclick="showImage('ot22.jpg')">Что обязан сделать работающий по окончании работы с использованием офисного оборудования?</button>
+<button class="screenshot-btn" onclick="showImage('ot23.jpg')">Что следует сделать работающему по окончании работы с использованием офисного оборудования?</button>
+<button class="screenshot-btn" onclick="showImage('ot24.jpg')">Что необходимо сделать работающему при появлении запаха гари в помещении в котором установлено офисное оборудование?</button>
+<button class="screenshot-btn" onclick="showImage('ot25.jpg')">Какую минимальную величину должна составлять площадь одного рабочего места для пользователей ВДТ, ЭВМ и ПЭВМ на базе плоских дискретных экраном (жидкокристаллические, плазменные и другое)?</button>
+<button class="screenshot-btn" onclick="showImage('ot26.jpg')">С какой периодичностью должно проводиться проветривание помещений, оборудованных ВДТ, ЭВМ или ПЭВМ?</button>
+<button class="screenshot-btn" onclick="showImage('ot27.jpg')">Каким должно быть минимальное расстояние между рабочими столами с видеомониторами (в направлении тыла поверхности одного видеомонитора и жкрана другого видеомонитора) при размещении рабочих мест с ВДТ, ЭВМ и ПЭВМ?</button>
+<button class="screenshot-btn" onclick="showImage('ot28.jpg')">С какой периодичностью необходимо протирать поверхности периферийных устройств(клавиатура, манипулятор мышь, принтер, сканер и другое) ВДТ, ЭВМ и ПЭВМ?</button>
+<button class="screenshot-btn" onclick="showImage('ot29.jpg')">Какое максимальное время в течение рабочего дня (смены) могут работать с ВДТ, ЭВМ и ПЭВМ женщины со времени установления их беременности и в период кормления ребенка грудью?</button>
+            </div>
+        </div>
+
+        <div id="section2" class="page">
+            <button class="back-btn" onclick="showMainPage()">Назад к разделам</button>
+            <h2 class="section-title">Электробезопасность</h2>
+            
+            <div class="section-search-container">
+                <input type="text" class="section-search-input" 
+                       placeholder="Поиск по скриншотам..."
+                       data-section="section2"
+                       oninput="filterScreenshots('section2', this.value)">
+                <div class="section-search-info" id="search-info-section2"></div>
+            </div>
+            
+            <div class="screenshots-grid" id="screenshots-section2">
+<button class="screenshot-btn" onclick="showImage('el1.jpg')">Каждый работник, обнаруживший нарушения правил технической эксплуатации электроустановок, а также заметивший неисправности электроустановки или средств защиты, должен немедленно сообщить об этом</button>
+<button class="screenshot-btn" onclick="showImage('el2.jpg')">Какие различают электрические ожоги человеческого тела?</button>
+<button class="screenshot-btn" onclick="showImage('el3.jpg')">Каким образом различаются помещения в отношении опасности поражения людей электрическим током?</button>
+<button class="screenshot-btn" onclick="showImage('el4.jpg')">Что должны в первую очередь сделать работающие при обнаружении неисправности электроустановки, которая представляет явную опасность для работающих и окружающих лиц?</button>
+<button class="screenshot-btn" onclick="showImage('el5.jpg')">Что такое электрический удар?</button>
+<button class="screenshot-btn" onclick="showImage('el6.jpg')">Почему опасно касаться батарей отопления во время пользования переносными светильниками, приборами, электроинструментом?</button>
+<button class="screenshot-btn" onclick="showImage('el7.jpg')">Упавший на землю провод линии электропередачи может представлять явную опасность для окружающих лиц. Какие действия должны быть выполнены в первую очередь при обнаружении упавшего на землю провода линии электропередачи?</button>
+<button class="screenshot-btn" onclick="showImage('el8.jpg')">Разрешается ли вынимать вилку из розетки, вытягивая ее за электрический шнур?</button>
+<button class="screenshot-btn" onclick="showImage('el9.jpg')">Лицо из числа неэлектротехнического персонала обнаружило у электроустановки обрыв заземляющего провода. Допускается ли ему прикасаться к оборванному заземляющему проводу?</button>
+<button class="screenshot-btn" onclick="showImage('el10.jpg')">Допускается ли неэлектротехническому персоналу открывать двери электрических шкафов, снимать ограждения токоведущих частей электроустановок?</button>
+<button class="screenshot-btn" onclick="showImage('el11.jpg')">Как производить при несчастных случаях снятие напряжения для освобождения потерпевшего от воздействия электрического тока?</button>
+<button class="screenshot-btn" onclick="showImage('el12.jpg')">Разрешается ли неэлектротехническому персоналу устранять неисправности электрооборудования, переносного электроинструмента, переносных электроламп?</button>
+<button class="screenshot-btn" onclick="showImage('el13.jpg')">Чем усугубляется опасность поражения электрическим током?</button>
+<button class="screenshot-btn" onclick="showImage('el14.jpg')">Как подразделяются вредные воздействия, которые электрический ток оказывает на человека?</button>
+<button class="screenshot-btn" onclick="showImage('el15.jpg')">Какие признаки характеризуют первую степень электрического удара?</button>
+<button class="screenshot-btn" onclick="showImage('el16.jpg')">К какой степени следует отнести электрический удар, полученный пострадавшим, если у него отсутствует сознание, но сердце работает и он дышит?</button>
+<button class="screenshot-btn" onclick="showImage('el17.jpg')">Электротехнический персонал при подготовке рабочего места в электроустановках вывесил предупреждающие, запрещающие, предписывающие и указательные плакаты.Допускается ли снимать эти плакаты неэлектротехническому персоналу?</button>
+<button class="screenshot-btn" onclick="showImage('el18.jpg')">Разрешается ли закладывать за батареи отопления электрические провода и шнуры?</button>
+            </div>
+        </div>
+
+        <div id="section3" class="page">
+            <button class="back-btn" onclick="showMainPage()">Назад к разделам</button>
+            <h2 class="section-title">Общие вопросы по охране труда</h2>
+            
+            <div class="section-search-container">
+                <input type="text" class="section-search-input" 
+                       placeholder="Поиск по скриншотам..."
+                       data-section="section3"
+                       oninput="filterScreenshots('section3', this.value)">
+                <div class="section-search-info" id="search-info-section3"></div>
+            </div>
+            
+            <div class="screenshots-grid" id="screenshots-section3">
+<button class="screenshot-btn" onclick="showImage('obj1.jpg')">В каких случаях определяется и указывается в акте о несчастном случае на производстве степень вины потерпевшего в процентах?</button>
+<button class="screenshot-btn" onclick="showImage('obj2.jpg')">На что из перечисленного в вариантах ответа имеют право работники службы охраны труда?</button>
+<button class="screenshot-btn" onclick="showImage('obj3.jpg')">В каком из указанных ниже случаев однократного грубого нарушения работником трудовых обязанностей допускается расторжение трудового договора по инициативе нанимателя (по дискредитирующим обстоятельствам)?</button>
+<button class="screenshot-btn" onclick="showImage('obj4.jpg')">В течении какого времени работники могут обращаться в комиссию по трудовым спорам с момента, когда они узнали или должны были узнать о нарушении своего права?</button>
+<button class="screenshot-btn" onclick="showImage('obj5.jpg')">Допускается ли увольнение работника за прогул (в том числе отсуттвие на работе более трех часов в течение рабочего дня) без уважительных причин?</button>
+<button class="screenshot-btn" onclick="showImage('obj6.jpg')">Кому, как и что должен сообщить работник при отказе от выполнения порученной работы в случае возникновения непосредственной опасности для жизни и здоровья его и окружающих, а так же по причине непредоставления работающему средств индивидуальной защиты, непосредственно обеспечивающих безопасность труда?</button>
+<button class="screenshot-btn" onclick="showImage('obj7.jpg')">В каком из перечисленных ниже случаев работа, выполненная сверх установленного времени, не признается сверхурочной?</button>
+<button class="screenshot-btn" onclick="showImage('obj8.jpg')">Допускается ли нанимателю увольнение работника за хищение по месту работы имущества нанимателя если факт хищения не установлен вступившим в силу приговором суда или постановлением органа в компетенцию которого входит наложение административного взыскания?</button>
+<button class="screenshot-btn" onclick="showImage('obj9.jpg')">Какой вид инструктажа проводится при выполнении разовых работ, не связанных с прямыми обязанностями по профессии рабочего либо должности служащего?</button>
+<button class="screenshot-btn" onclick="showImage('obj10.jpg')">Работник отказался от выполнения порученной работы по причине непредоставления ему средств индивидуальной защиты непосредственно обеспечивающих безопасность труда, о чем сообщил письменно нанимателю. Каковы дальнейшие действия работника?</button>
+<button class="screenshot-btn" onclick="showImage('obj11.jpg')">В течении какого времени со дня вручения копии приказа об увольнении или со дня выдачи трудовой книжки с записью об основании прекращения трудового договора либо со дня отказа в выдаче или получении указанных документов работники могут образаться в суд для разрешения трудового спора по делу об увольнении?</button>
+<button class="screenshot-btn" onclick="showImage('obj12.jpg')">Потерпевший от несчастного случая на производстве или его представитель уполномоченный в соответствии с законодательством может обжаловать в департаменте государственной инспекции труда министерства труда и соц защиты его территориальные подразделения или в суде...</button>
+<button class="screenshot-btn" onclick="showImage('obj13.jpg')">Кого работник обязан немедленно известить о неисправности оборудования инструмента приспособлений транспортных средств средств защиты</button>
+<button class="screenshot-btn" onclick="showImage('obj14.jpg')">Какие из указанных ниже положений коллективного договора всегда применяются в отношении всех работников организации в том числе тех от имени которых он не заключался?</button>
+<button class="screenshot-btn" onclick="showImage('obj15.jpg')">При выполнении каких работ работающие должны проходить обязательные и или внеочередные мед осмотры?</button>
+<button class="screenshot-btn" onclick="showImage('obj16.jpg')">Средства индивидуальной защиты бывшие в употреблении выдаются другим работникам только после</button>
+<button class="screenshot-btn" onclick="showImage('obj17.jpg')">Что обязан предпринять работник в случаях отсутствия или неисправности средств индивидуальной защиты?</button>
+<button class="screenshot-btn" onclick="showImage('obj18.jpg')">Какой вид инструктажа по охране труда проводится при принятии новых нормативных правовых актов в том числе технических нормативных правовых актов локадьных правовых актов или внесении изменений к ним?</button>
+<button class="screenshot-btn" onclick="showImage('obj19.jpg')">На кого возлагаются обязанности по организации химчистки, стирки, ремонта и тд выданных работникам средств индивидуальной защиты?</button>
+<button class="screenshot-btn" onclick="showImage('obj20.jpg')">Кого работник обязан немедленно известить об ухудшении состояния своего здоровья?</button>
+<button class="screenshot-btn" onclick="showImage('obj21.jpg')">Работники, исполняющие обязанности временно отсутствующих работников должны...</button>
+<button class="screenshot-btn" onclick="showImage('obj22.jpg')">Какой бывает инструктаж по охране труда по характеру и времени проведения?</button>
+<button class="screenshot-btn" onclick="showImage('obj23.jpg')">Кому работающий обязан немедленно сообщить о любой ситуации, угрожающей жизни или здоровью работающих и окружающих несчастном случае произошедшем на производстве?</button>
+<button class="screenshot-btn" onclick="showImage('obj24.jpg')">Какой вид инструктажа по охране труда проводится при изменении технологического процесса и тд других факторов влияющих на безопасность труда?</button>
+<button class="screenshot-btn" onclick="showImage('obj25.jpg')">Несет ли работник расходы по финансированию мероприятий по улучшению условий и охраны труда?</button>
+<button class="screenshot-btn" onclick="showImage('obj26.jpg')">Что относится к целям аттестации рабочих мест по условиям труда?</button>
+<button class="screenshot-btn" onclick="showImage('obj27.jpg')">Каким способом необходимо ознакомить с итоговыми результатами аттестации работников на рабочих местах которых проводилась аттестация по условиям труда?</button>
+<button class="screenshot-btn" onclick="showImage('obj28.jpg')">Страховые выплаты по обязательному страхованию от несчастных случаев на производстве и профессиональных заболеваний не производятся если повреждение здоровья застрахованного лица произошло вследствие противоправного деяния застрахованного совершенного умышленно и установленного...</button>
+<button class="screenshot-btn" onclick="showImage('obj29.jpg')">Какую информацию работающие обязаны НЕМЕДЛЕННО сообщать работодателю?</button>
+<button class="screenshot-btn" onclick="showImage('obj30.jpg')">Допускается ли рассмотрение заявления работника в комиссии по трудовым спорам без его участия?</button>
+<button class="screenshot-btn" onclick="showImage('obj31.jpg')">Допускается ли увольнение работника за однократное ранушение требований по охране труда?</button>
+<button class="screenshot-btn" onclick="showImage('obj32.jpg')">Какая максимальная суммарная продолжительность сверхурочных работ допускается для каждого работника в течение года?</button>
+<button class="screenshot-btn" onclick="showImage('obj33.jpg')">Как наниматель обязан знакомить работника с изменениями в его трудовых обязанностях, а также обьявлять приказ об изменении условий трудового договора?</button>
+<button class="screenshot-btn" onclick="showImage('obj34.jpg')">Кем осуществляется контроль за соблюдением требований по охране труда в организации и структурных подразделениях?</button>
+<button class="screenshot-btn" onclick="showImage('obj35.jpg')">Кто может принимать участкие в осуществлении контроля за соблюдением требований по охране труда в организации и структурных подразделениях?</button>
+<button class="screenshot-btn" onclick="showImage('obj36.jpg')">Какой из указанныз ниже категорий работников по их заявлению ежемесячно предоставляется один дополнительный свободный от работы день оплачиваемый по кол договору?</button>
+<button class="screenshot-btn" onclick="showImage('obj37.jpg')">В каком из вариантов ответа правильно изложены обязанности работающего в области охраны труда?</button>
+<button class="screenshot-btn" onclick="showImage('obj38.jpg')">Кто имеет право полностью или частично отменить предписания об устранении нарушений требовани по охране труда выданное работником службы охраны труда?</button>
+<button class="screenshot-btn" onclick="showImage('obj39.jpg')">Страховые выплати по обязательному страхованию не производятся если ты был пьян или под наркотой и тд, причем подтверждено всё было</button>
+<button class="screenshot-btn" onclick="showImage('obj40.jpg')">Сколько времени в течение рабочего дня работник должен быть занят на работах с предными или опасными условиями трудя чтобы это было основанием для проведения аттестации его раб места по условиям труда?</button>
+<button class="screenshot-btn" onclick="showImage('obj41.jpg')">В какой срок застрахованный по обязательному страхованию от несчастных случаем и проф заболеваний обязан известить страховщика о наступлении обстоятельств влекущих изменение или прекращение страховых выплат и изменении места жительства?</button>
+<button class="screenshot-btn" onclick="showImage('obj42.jpg')">В каких случаях трудовой отпуск может быть разделен на две части?</button>
+<button class="screenshot-btn" onclick="showImage('obj43.jpg')">Кем рассматриваются индивидуальные трудовые споры?</button>
+<button class="screenshot-btn" onclick="showImage('obj44.jpg')">Разрешается ли работникам по окончании работы выносить средства индивидуальной защиты за пределаы территории нанимателя?</button>
+<button class="screenshot-btn" onclick="showImage('obj45.jpg')">Работник не прошел в установленный срок проверку знаний по вопросам охраны труда по уважительной причине (болезня отпуск и тп). В течение какого максимального срока со дня выхода на работу он должен пройти проверку знаний?</button>
+<button class="screenshot-btn" onclick="showImage('obj46.jpg')">Имеел ли право работник службы охраны труда принимать меры по приостановлению эксплуатации оборудования инструменов приспособлений транспортных средств используемых в организации выполнения работ?</button>
+<button class="screenshot-btn" onclick="showImage('obj47.jpg')">Какая максимальная суммарная продолжительность сверхурочных работ допускается для каждого работника в течение рабочей недели?</button>
+<button class="screenshot-btn" onclick="showImage('obj48.jpg')">Что обязаны выполнять работающие при несчастном случае произошедшем на производстве?</button>
+<button class="screenshot-btn" onclick="showImage('obj49.jpg')">В каких случаях разрешается перевод работников на другую работу без их письменного согласия?</button>
+<button class="screenshot-btn" onclick="showImage('obj50.jpg')">Внеплановый инструктаж по охране труда проводится при перерыве в работе по профессии рабочего более</button>
+<button class="screenshot-btn" onclick="showImage('obj51.jpg')">Какой вид инструктажа проводится при производстве работ на которые оформляется наряд допуск?</button>
+<button class="screenshot-btn" onclick="showImage('obj52.jpg')">Какую ответственность могут нести юридические и физические лица виновные в нарушении законодательства о труде?</button>
+<button class="screenshot-btn" onclick="showImage('obj53.jpg')">Какова полная норма продолжительности рабочего времени в неделю?</button>
+<button class="screenshot-btn" onclick="showImage('obj54.jpg')">Что является основанием для перевода работника по состоянию здоровья на другую имеющуюся работу?</button>
+<button class="screenshot-btn" onclick="showImage('obj55.jpg')">В течении какого времени наниматель обязан письменно предупредить работника об изменении существенных условий труда?</button>
+<button class="screenshot-btn" onclick="showImage('obj56.jpg')">На какой срок разрешается временный перевод в случае производственной необходимости без согласия работника?</button>
+<button class="screenshot-btn" onclick="showImage('obj57.jpg')">Общая продолжительность простоев в течение календарного года не может превышать суммарно...</button>
+<button class="screenshot-btn" onclick="showImage('obj58.jpg')">При каком условии возможно расторжение трудового договора по инициативе нанимателя за неисполнение работником трудовых обязанностей?</button>
+<button class="screenshot-btn" onclick="showImage('obj59.jpg')">Страхователем оргазинована доставка работников к месту выполнения работы для чего дали транспорт страхователя. При каком условии подлежат расследованию и учету в соответствиями с многими правилами несчастнынее случаи произошедшие с работниками при следовании к месту выполнения работы на этом транспорте?</button>
+<button class="screenshot-btn" onclick="showImage('obj60.jpg')">Обязан ли наниматель заменить или отремонтировать средства индивидуальной защиты пришедшие в негодность до истечения периода использованияпо причинам не зависящим от работника?</button>
+<button class="screenshot-btn" onclick="showImage('obj61.jpg')">Какова продолжительность еженедельного непрерывного отдыха?</button>
+<button class="screenshot-btn" onclick="showImage('obj62.jpg')">Подлежат ли возврату нанимателю выданные им работнику средства индивидуальной защиты? если да то в каких случаях?</button>
+<button class="screenshot-btn" onclick="showImage('obj63.jpg')">В каком из указанных ниже случаев наниматель имеет право незамедлительно отстранять работника от работы при выявлении допущенных им нарушений производственно-технологической испольнительной или трудовой дисциплины?</button>
+<button class="screenshot-btn" onclick="showImage('obj64.jpg')">В каких из указанных ниже случаев работник не должен быть допущен нанимателем к работе?</button>
+<button class="screenshot-btn" onclick="showImage('obj65.jpg')">Предусмотренные в нормах организации дежурные средства индивидуальной защиты должны...</button>
+<button class="screenshot-btn" onclick="showImage('obj66.jpg')">Работы в выходные дни по предложению нанимателя проводятся только при условии...</button>
+<button class="screenshot-btn" onclick="showImage('obj67.jpg')">Каков порядок разделения трудового отпуска на части?</button>
+<button class="screenshot-btn" onclick="showImage('obj68.jpg')">Какие меры дисциплинарного взыскания могут применяться нанимателем к работнику за совершение дисциплинарного проступка?</button>
+<button class="screenshot-btn" onclick="showImage('obj69.jpg')">Что в первую очередь должен сделать наниматель до применения дисциплинарного взыскания на работника?</button>
+<button class="screenshot-btn" onclick="showImage('obj70.jpg')">Как должны допускаться к работе работники совмещающие несколько должностей служащих?</button>
+<button class="screenshot-btn" onclick="showImage('obj71.jpg')">Не позднее какого срока работники должны быть уведомлены о дате ремени и месте проведения периодической проверки знаний по вопросам охраны труда?</button>
+<button class="screenshot-btn" onclick="showImage('obj72.jpg')">Работник переведен из одного структурного подразделения организации в другое, требуется ли проводить с ним первичный инструктаж на рабочем месте?</button>
+<button class="screenshot-btn" onclick="showImage('obj73.jpg')">Куда вносится запись о прохождении проверки знаний по вопросам охраны труда работающих?</button>
+<button class="screenshot-btn" onclick="showImage('obj74.jpg')">Допускается ли работающий к выполнению работ если он не прошел проверку знаний по охране труда повторно?</button>
+<button class="screenshot-btn" onclick="showImage('obj75.jpg')">С какой периодичностью необходимо проводить с работающими повторный инструктаж по охране труда?</button>
+<button class="screenshot-btn" onclick="showImage('obj76.jpg')">Что необходимо сделать для допуска к самостоятельной работе с повышенной опасностью рабочих имеющих перерыв в выполнении данной работы более 1 года?</button>
+<button class="screenshot-btn" onclick="showImage('obj77.jpg')">Каким образом осуществляется допуск работающих к самостоятельной работе после прохождения первичной проверки знаний по вопросам охраны труда?</button>
+<button class="screenshot-btn" onclick="showImage('obj78.jpg')">В какой срок работающие не прошедшие первичную или периодическую проверку знаний по вопросам охраны труда в соответствующих комиссиях, должны пройти названные виды проверки знаний по вопросам охраны труда повторно?</button>
+            </div>
+        </div>
+
+        <div id="section4" class="page">
+            <button class="back-btn" onclick="showMainPage()">Назад к разделам</button>
+            <h2 class="section-title">Пожарная безопасность</h2>
+            
+            <div class="section-search-container">
+                <input type="text" class="section-search-input" 
+                       placeholder="Поиск по скриншотам..."
+                       data-section="section4"
+                       oninput="filterScreenshots('section4', this.value)">
+                <div class="section-search-info" id="search-info-section4"></div>
+            </div>
+            
+            <div class="screenshots-grid" id="screenshots-section4">
+                <button class="screenshot-btn" onclick="showImage('fire_plan.jpg')">План эвакуации</button>
+                <button class="screenshot-btn" onclick="showImage('fire_extinguisher.jpg')">Огнетушители</button>
+                <button class="screenshot-btn" onclick="showImage('fire_causes.jpg')">Причины пожаров</button>
+                <button class="screenshot-btn" onclick="showImage('fire_prevention.jpg')">Профилактические меры</button>
+            </div>
+        </div>
+
+        <div id="section5" class="page">
+            <button class="back-btn" onclick="showMainPage()">Назад к разделам</button>
+            <h2 class="section-title">Цвета сигнальные и знаки безопасности</h2>
+            
+            <div class="section-search-container">
+                <input type="text" class="section-search-input" 
+                       placeholder="Поиск по скриншотам..."
+                       data-section="section5"
+                       oninput="filterScreenshots('section5', this.value)">
+                <div class="section-search-info" id="search-info-section5"></div>
+            </div>
+            
+            <div class="screenshots-grid" id="screenshots-section5">
+                <button class="screenshot-btn" onclick="showImage('signs_prohibition.jpg')">Запрещающие знаки</button>
+                <button class="screenshot-btn" onclick="showImage('signs_warning.jpg')">Предупреждающие знаки</button>
+                <button class="screenshot-btn" onclick="showImage('signs_mandatory.jpg')">Предписывающие знаки</button>
+                <button class="screenshot-btn" onclick="showImage('signs_emergency.jpg')">Знаки эвакуации</button>
+            </div>
+        </div>
+
+        <div id="section6" class="page">
+            <button class="back-btn" onclick="showMainPage()">Назад к разделам</button>
+            <h2 class="section-title">Оказание первой помощи пострадавшим</h2>
+            
+            <div class="section-search-container">
+                <input type="text" class="section-search-input" 
+                       placeholder="Поиск по скриншотам..."
+                       data-section="section6"
+                       oninput="filterScreenshots('section6', this.value)">
+                <div class="section-search-info" id="search-info-section6"></div>
+            </div>
+            
+            <div class="screenshots-grid" id="screenshots-section6">
+<button class="screenshot-btn" onclick="showImage('pp1.jpg')">Для чего предназначем валидол или нитроглицерин находящийся в аптечке?</button>
+<button class="screenshot-btn" onclick="showImage('pp2.jpg')">Чем следует смазать обожженный участок кожи при оказании первой помощи пострадавшему получившему ожог третьей степени</button>
+<button class="screenshot-btn" onclick="showImage('pp3.jpg')">Какой должна быть частота вдувания воздуха пострадавшему при проведении искусственного дыхания методами изо рта в рот и изо рта в нос если у подстрадавшего хорошо определяется пульс и требуется проводить торлько искусственное дыхание?</button>
+<button class="screenshot-btn" onclick="showImage('pp4.jpg')">Что необходимо сделать в первую очередь перед тем как начать искусственное дыхание?</button>
+<button class="screenshot-btn" onclick="showImage('pp5.jpg')">Произошел несчастный случай при котором на одном из работников загорелась одежда. Каким образом может быть потушена одежда на пострадавшем?</button>
+<button class="screenshot-btn" onclick="showImage('pp6.jpg')">Что необходимо сделать после наложения жгута или закрутки для остановки кровотечения?</button>
+<button class="screenshot-btn" onclick="showImage('pp7.jpg')">На какое максимальное время может быть наложен жгут или закрутка для прекращения кровотечения?</button>
+<button class="screenshot-btn" onclick="showImage('pp8.jpg')">Разрешается ли касаться руками той части повязки которая должна быть наложена непосредственно на рану?</button>
+<button class="screenshot-btn" onclick="showImage('pp9.jpg')">Каким способом обезопасить себя от поражения электрическим током при освобождении пострадавшего от действия электрического тока при напряжении до 1000В при невозможности отключения электроустановки и отсутствии средств индивидуальной защиты?</button>
+<button class="screenshot-btn" onclick="showImage('pp10.jpg')">Как следует расположить голову пострадавшего при проведении ему искусственного дыхания?</button>
+<button class="screenshot-btn" onclick="showImage('pp11.jpg')">Что необходимо сделать с пострадавшим при переломе костей таза?</button>
+<button class="screenshot-btn" onclick="showImage('pp12.jpg')">При проведении искусственного дыхания необходимо следить чтобы воздух не попал в желудок пострадавшего. Что делать если воздух попал в желудок?</button>
+<button class="screenshot-btn" onclick="showImage('pp13.jpg')">Укажите возможные симптомы обморока</button>
+<button class="screenshot-btn" onclick="showImage('pp14.jpg')">Что необходимо сделать с пострадавшим при переломе ключицы?</button>
+<button class="screenshot-btn" onclick="showImage('pp15.jpg')">Что из указанного в вариантах ответа нельзя делать при ожогах?</button>
+<button class="screenshot-btn" onclick="showImage('pp16.jpg')">Как оказать первую помощь при обмороке?</button>
+<button class="screenshot-btn" onclick="showImage('pp17.jpg')">Что необходимо сделать в первую очередь при освобождении пострадавшего от действия электрического тока?</button>
+<button class="screenshot-btn" onclick="showImage('pp18.jpg')">Что из указанного в вариантаъ ответа нельзя делать с пострадавшим от действия электрического тока?</button>
+<button class="screenshot-btn" onclick="showImage('pp19.jpg')">Как освободить пострадавшего от электрического тока при напряжении до 1000В при невозможности отключения электроустановки?</button>
+<button class="screenshot-btn" onclick="showImage('pp20.jpg')">Имеются ли отличия в оказании первой помощи при вывихе и при переломе костей конечностей?</button>
+<button class="screenshot-btn" onclick="showImage('pp21.jpg')">Каковы признаки перелома ребер и какая при этом должна оказываться первая помощь?</button>
+<button class="screenshot-btn" onclick="showImage('pp22.jpg')">Какое минимальное количество вдуваний воздуха и нажатий на грудную клетку необходимо сделать за 1 минуту в случае когда искусственное дыхание и наружный массаж сердца выполняет один человек?</button>
+<button class="screenshot-btn" onclick="showImage('pp23.jpg')">Оказание первой помощи при поражении электрическим током требует быстрых действий. Какие действия не рекомендуется делать чтобы не терять драгоценное время?</button>
+<button class="screenshot-btn" onclick="showImage('pp24.jpg')">Какой из перечисленных методов оказания первой помощи при ушибах не является правильным?</button>
+<button class="screenshot-btn" onclick="showImage('pp25.jpg')">Какие из перечисленных мер оказания первой помощи при растяжении связок являются правильными?</button>
+<button class="screenshot-btn" onclick="showImage('pp26.jpg')">Что из ниже перечисленного определяет собой эффективность искусственного дыхания и закрытого массажа сердца?</button>
+<button class="screenshot-btn" onclick="showImage('pp27.jpg')">Каковый признаки эффективности массажа сердца?</button>
+<button class="screenshot-btn" onclick="showImage('pp28.jpg')">Какая из перечисленных мер должна применяться при ожогах кожи кислотой?</button>
+<button class="screenshot-btn" onclick="showImage('pp29.jpg')">Следует ли продолжать делать искусственное дыхание и массаж сердца при оказании первой помощи если у пострадавшего появились признаки жизни но сердечная деятельность или самостоятельное дыхание  еще не восстановились?</button>
+<button class="screenshot-btn" onclick="showImage('pp30.jpg')">Какой из перечисленных видов ожогов от действия электрического тока относится ко второй степени?</button>
+<button class="screenshot-btn" onclick="showImage('pp31.jpg')">Каким образом следует удалять инородное тело из глаза?</button>
+<button class="screenshot-btn" onclick="showImage('pp32.jpg')">Что необходимо сделать в первую очередь при обморожении в случае появления на коже признаков омертвения тканей?</button>
+<button class="screenshot-btn" onclick="showImage('pp33.jpg')">Где следует распологать на теле пострадавшего ладонь руки при проведении наружного массажа сердца?</button>
+<button class="screenshot-btn" onclick="showImage('pp34.jpg')">Как снимается напряжение с электроустановки для освобождения пострадавшего?</button>
+<button class="screenshot-btn" onclick="showImage('pp35.jpg')">Как освобождать пострадавшего от электрического тока при напряении до 1000В при невозможности отключения электроустановки?</button>
+<button class="screenshot-btn" onclick="showImage('pp36.jpg')">Как следует распологать руки при проведении наружного массажа сердца?</button>
+<button class="screenshot-btn" onclick="showImage('pp37.jpg')">Для чего предназначем нашатырный спирт, находящийся в аптечке?</button>
+<button class="screenshot-btn" onclick="showImage('pp38.jpg')">Что должно быть сделано при ожогах глаз электрической дугой?</button>
+<button class="screenshot-btn" onclick="showImage('pp39.jpg')">В каком сесте шеи прощупывают пульс на сонной артерии?</button>
+<button class="screenshot-btn" onclick="showImage('pp40.jpg')">Как освобождать пострадавшего от электрического тока при напряжении выше 1000В при невозможности отключения электроустановки?</button>
+<button class="screenshot-btn" onclick="showImage('pp41.jpg')">Каковы меры оказания первой помощи при отравлении газом?</button>
+<button class="screenshot-btn" onclick="showImage('pp42.jpg')">Каковы признаки теплового и солнечного ударов?</button>
+<button class="screenshot-btn" onclick="showImage('pp43.jpg')">Для чего предназначена борная кислота находящаяся в аптечке?</button>
+<button class="screenshot-btn" onclick="showImage('pp44.jpg')">Какова первая помощь при отравлении окислами азота?</button>
+<button class="screenshot-btn" onclick="showImage('pp45.jpg')">При проведении искусственного дыхания необходимо следить чтобы воздух не попал в желудок пострадавшего. Что свидетельствует о попадании воздуха в желудок?</button>
+<button class="screenshot-btn" onclick="showImage('pp46.jpg')">Какие меры оказания первой помощи необходимо применить при ожоге кожи щелочью?</button>
+<button class="screenshot-btn" onclick="showImage('pp47.jpg')">Что делать если в процессе искусственного дыхания изо рта в рот после вдувания грудная клетка не расправляется?</button>
+<button class="screenshot-btn" onclick="showImage('pp48.jpg')">Каково назначение раствора питьевой соды?</button>
+<button class="screenshot-btn" onclick="showImage('pp49.jpg')">В чем заключается первая помощь при общем переохлаждении с потерей сознания?</button>
+<button class="screenshot-btn" onclick="showImage('pp50.jpg')">Какова первая помощь при легком отравлении хлором?</button>
+<button class="screenshot-btn" onclick="showImage('pp51.jpg')">Что необходимо делать с пострадавшим от воздействия электрического тока если у него отсутствует дыхание и пульс?</button>
+<button class="screenshot-btn" onclick="showImage('pp52.jpg')">Оказание первой помощи при поражении электрическим током требует быстрых действий. Какие действия не рекомендуется делать чтобы не терять драгоценное время?</button>
+<button class="screenshot-btn" onclick="showImage('pp53.jpg')">Для чего предназначены валериановые капли находящиеся в аптечке?</button>
+<button class="screenshot-btn" onclick="showImage('pp54.jpg')">Что нужно сделать при оказании первой помощи при ранении?</button>
+<button class="screenshot-btn" onclick="showImage('pp55.jpg')">Пострадавший от действия электрического тока после оказания первой помощи прекрасно себя чувствует. У него отсутствуют какие либо внешние признаки электротравмы или болезненного состояния. В каком случае он может начинать двигаться и возобновлять свою работу?</button>
+<button class="screenshot-btn" onclick="showImage('pp56.jpg')">Как поступать в случае когда из раны выпадает какая либо ткань или орган?</button>
+<button class="screenshot-btn" onclick="showImage('pp57.jpg')">Что необходимо сделать с пострадавшим при повреждении позвоночника?</button>
+<button class="screenshot-btn" onclick="showImage('pp58.jpg')">В каком случае пострадавшего от электрического тока следует переносить с места происшествия в другое место для оказания первой помощи?</button>
+<button class="screenshot-btn" onclick="showImage('pp59.jpg')">К пострадавшему от электрического тока невозможно вызвать врача и его требуется доставить в лечебное учреждение. В каком из вариантов ответа его нельзя транспортировать и необходимо продолжать оказывать первую помощь на месте происшествия?</button>
+<button class="screenshot-btn" onclick="showImage('pp60.jpg')">Как поступать перед перевязкой раны при отсутствии чистой воды для мыться рук?</button>
+<button class="screenshot-btn" onclick="showImage('pp61.jpg')">Как следует проверять правильность наложения жгута?</button>
+<button class="screenshot-btn" onclick="showImage('pp62.jpg')">В каких случаях необходимо делать искусственное дыхание пострадавшему от электрического тока?</button>
+<button class="screenshot-btn" onclick="showImage('pp63.jpg')">Какой из перечисленных признаков свидетельствует о резком ухудшении кровообращения мозга при отсутствии дыхания и пульса у пострадавшего от электротока?</button>
+<button class="screenshot-btn" onclick="showImage('pp64.jpg')">Нужно ли вызывать врача во всех случаях поражения электрическим током?</button>
+<button class="screenshot-btn" onclick="showImage('pp65.jpg')">В каких случаях необходимо производить наружный массаж сердца пострадавшему от электротока?</button>
+<button class="screenshot-btn" onclick="showImage('pp66.jpg')">Что нужно делать если при проведении реанимационных мероприятий у пострадавшего восстановится сердечная деятельность и будет хорошо определяться пульс, но самостоятельное дыхание ещё слабо?</button>
+<button class="screenshot-btn" onclick="showImage('pp67.jpg')">Что нужно сделать во время оказания первой помощи при ранении если рана загрязнена землей?</button>
+<button class="screenshot-btn" onclick="showImage('pp68.jpg')">Разрешается ли накладывать вату непосредственно на рану?</button>
+<button class="screenshot-btn" onclick="showImage('pp69.jpg')">Каким образом следует попытаться остановить кровотечение если оно не останавливается после наложения давящей повязки?</button>
+<button class="screenshot-btn" onclick="showImage('pp70.jpg')">Что нужно сделать оказывая первую помощь работнику при внутреннем кровотечении?</button>
+<button class="screenshot-btn" onclick="showImage('pp71.jpg')">Какие кровяные сосуды и как следует прижать пальцами для остановки кровотечения при ранении кисти руки?</button>
+<button class="screenshot-btn" onclick="showImage('pp72.jpg')">Что нужно сделать оказывая первую помощь работнику при кровотечении из носа?</button>
+<button class="screenshot-btn" onclick="showImage('pp73.jpg')">Каковы особенности наложения шины при закрытом переломе?</button>
+<button class="screenshot-btn" onclick="showImage('pp74.jpg')">Что необходимо сделать с пострадавшим при повреждении головы?</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Просмотрщик изображений -->
+    <div id="image-viewer" class="image-viewer">
+        <span class="close-btn" onclick="closeImageViewer()">&times;</span>
+        <div class="image-container">
+            <img id="displayed-image" src="" alt="Просмотр скриншота">
+        </div>
+    </div>
+
+    <script>
+        // Основные функции навигации
+        function showMainPage() {
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            document.getElementById('main-page').classList.add('active');
+            document.getElementById('search-input').value = '';
+            filterButtons();
+        }
+
+        function showSection(sectionId) {
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            document.getElementById(sectionId).classList.add('active');
+            
+            // Сброс поиска при переходе в раздел
+            const searchInput = document.querySelector(`#${sectionId} .section-search-input`);
+            if (searchInput) {
+                searchInput.value = '';
+                filterScreenshots(sectionId, '');
+            }
+        }
+
+        // Функции для работы с изображениями
+        function showImage(imageName) {
+            const viewer = document.getElementById('image-viewer');
+            const imgElement = document.getElementById('displayed-image');
+            
+            imgElement.src = `screenshots/${imageName}`;
+            imgElement.alt = `Скриншот: ${imageName.split('.')[0]}`;
+            
+            viewer.classList.add('active');
+        }
+
+        function closeImageViewer() {
+            document.getElementById('image-viewer').classList.remove('active');
+        }
+
+        // Функция для поиска на главной странице
+        function filterButtons() {
+            const searchTerm = document.getElementById('search-input').value.toLowerCase();
+            const buttons = document.querySelectorAll('#buttons-grid .btn');
+            const searchInfo = document.getElementById('search-info');
+            let visibleCount = 0;
+            
+            buttons.forEach(button => {
+                const buttonText = button.textContent.toLowerCase();
+                if (buttonText.includes(searchTerm)) {
+                    button.style.display = 'flex';
+                    visibleCount++;
+                } else {
+                    button.style.display = 'none';
+                }
+            });
+            
+            // Отображение информации о результатах поиска
+            if (searchTerm.length > 0) {
+                if (visibleCount === 0) {
+                    searchInfo.textContent = 'Ничего не найдено. Попробуйте другой запрос.';
+                    searchInfo.style.color = '#e74c3c';
+                } else {
+                    searchInfo.textContent = `Найдено разделов: ${visibleCount}`;
+                    searchInfo.style.color = '#27ae60';
+                }
+            } else {
+                searchInfo.textContent = '';
+            }
+        }
+        
+        // Функция для поиска скриншотов в разделах
+        function filterScreenshots(sectionId, searchTerm) {
+            const buttons = document.querySelectorAll(`#screenshots-${sectionId} .screenshot-btn`);
+            const searchInfo = document.getElementById(`search-info-${sectionId}`);
+            let visibleCount = 0;
+            const term = searchTerm.toLowerCase();
+            
+            buttons.forEach(button => {
+                const buttonText = button.textContent.toLowerCase();
+                if (buttonText.includes(term)) {
+                    button.style.display = 'flex';
+                    visibleCount++;
+                } else {
+                    button.style.display = 'none';
+                }
+            });
+            
+            // Отображение информации о результатах поиска
+            if (searchTerm.length > 0) {
+                if (visibleCount === 0) {
+                    searchInfo.textContent = 'Скриншоты не найдены';
+                    searchInfo.style.color = '#e74c3c';
+                } else {
+                    searchInfo.textContent = `Найдено скриншотов: ${visibleCount}`;
+                    searchInfo.style.color = '#27ae60';
+                }
+            } else {
+                searchInfo.textContent = '';
+            }
+        }
+        
+        // Инициализация
+        document.addEventListener('DOMContentLoaded', function() {
+            // Добавляем обработчик для поиска на главной странице
+            document.getElementById('search-input').addEventListener('input', filterButtons);
+            
+            // Добавляем обработчики для поиска в разделах
+            document.querySelectorAll('.section-search-input').forEach(input => {
+                input.addEventListener('input', function() {
+                    const sectionId = this.getAttribute('data-section');
+                    filterScreenshots(sectionId, this.value);
+                });
+            });
+            
+            // Закрытие просмотрщика по клику вне изображения
+            document.getElementById('image-viewer').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeImageViewer();
+                }
+            });
+            
+            // Закрытие по клавише Esc
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    closeImageViewer();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
