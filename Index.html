@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="ANSI" name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>База знаний по охране труда</title>
     <style>
         * {
@@ -315,6 +316,66 @@ margin-bottom:20px;
                 font-size: 14px;
             }
         }
+
+        /* Глобальные результаты поиска */
+        .global-results {
+            margin-bottom: 20px;
+        }
+
+        .global-result-item {
+            display: flex;
+            align-items: flex-start;
+            text-align: left;
+            width: 100%;
+            background: linear-gradient(to bottom, #ffffff, #f4f8fb);
+            border: 1px solid #d6e4f0;
+            border-left: 4px solid #3498db;
+            border-radius: 10px;
+            padding: 14px 16px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            font-size: 15px;
+            color: #2c3e50;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .global-result-item:hover {
+            background: linear-gradient(to bottom, #eaf3fb, #dceafa);
+            transform: translateX(3px);
+            box-shadow: 0 4px 10px rgba(52,152,219,0.18);
+            border-left-color: #2980b9;
+        }
+
+        .global-result-item .result-section {
+            display: inline-block;
+            font-size: 12px;
+            font-weight: 600;
+            color: #2980b9;
+            background: #eaf3fb;
+            border-radius: 20px;
+            padding: 3px 10px;
+            margin-bottom: 6px;
+        }
+
+        .global-result-text {
+            flex: 1;
+            line-height: 1.4;
+        }
+
+        .global-result-text mark {
+            background: #ffe187;
+            color: inherit;
+            border-radius: 3px;
+            padding: 0 2px;
+        }
+
+        .global-no-results {
+            text-align: center;
+            color: #e74c3c;
+            font-size: 17px;
+            padding: 18px;
+        }
     </style>
 </head>
 <body>
@@ -326,9 +387,12 @@ margin-bottom:20px;
             <!-- Поисковая строка -->
             <div class="search-container">
                 <input type="text" id="search-input" class="search-input" 
-                       placeholder="Поиск по разделам...">
+                       placeholder="Поиск по всем вопросам...">
                 <div class="search-info" id="search-info"></div>
             </div>
+
+            <!-- Контейнер результатов глобального поиска -->
+            <div class="global-results" id="global-results"></div>
             
             <div class="btn-grid" id="buttons-grid">
                 <button class="btn" onclick="showSection('section1')">ОТ при использовании в работе офисного оборудования</button>
@@ -693,34 +757,78 @@ margin-bottom:20px;
             document.getElementById('image-viewer').classList.remove('active');
         }
 
-        // Функция для поиска на главной странице
+        // Глобальный поиск по всем вопросам всех разделов
         function filterButtons() {
-            const searchTerm = document.getElementById('search-input').value.toLowerCase();
+            const rawTerm = document.getElementById('search-input').value.trim();
+            const term = rawTerm.toLowerCase();
             const buttons = document.querySelectorAll('#buttons-grid .btn');
             const searchInfo = document.getElementById('search-info');
-            let visibleCount = 0;
-            
-            buttons.forEach(button => {
-                const buttonText = button.textContent.toLowerCase();
-                if (buttonText.includes(searchTerm)) {
-                    button.style.display = 'flex';
-                    visibleCount++;
-                } else {
-                    button.style.display = 'none';
+            const resultsBox = document.getElementById('global-results');
+
+            // Пустой запрос — обычный список разделов
+            if (term.length === 0) {
+                buttons.forEach(b => { b.style.display = 'flex'; });
+                resultsBox.innerHTML = '';
+                searchInfo.textContent = '';
+                return;
+            }
+
+            // Скрываем кнопки-разделы, показываем найденные вопросы
+            buttons.forEach(b => { b.style.display = 'none'; });
+
+            const sectionTitles = {};
+            document.querySelectorAll('.page[id^="section"]').forEach(page => {
+                const titleEl = page.querySelector('.section-title');
+                sectionTitles[page.id] = titleEl ? titleEl.textContent.trim() : page.id;
+            });
+
+            const allQuestions = document.querySelectorAll('.screenshots-grid .screenshot-btn');
+            let html = '';
+            let count = 0;
+
+            allQuestions.forEach(q => {
+                const text = q.textContent.trim();
+                if (text.toLowerCase().includes(term)) {
+                    count++;
+                    const page = q.closest('.page');
+                    const sectionTitle = (page && sectionTitles[page.id]) ? sectionTitles[page.id] : '';
+                    const onclickAttr = q.getAttribute('onclick') || '';
+
+                    html += '<div class="global-result-item" onclick="' +
+                            onclickAttr.replace(/"/g, '&quot;') + '">' +
+                            '<div class="global-result-text">' +
+                            (sectionTitle ? '<span class="result-section">' + escapeHtml(sectionTitle) + '</span><br>' : '') +
+                            highlight(text, rawTerm) +
+                            '</div></div>';
                 }
             });
-            
-            // Отображение информации о результатах поиска
-            if (searchTerm.length > 0) {
-                if (visibleCount === 0) {
-                    searchInfo.textContent = 'Ничего не найдено. Попробуйте другой запрос.';
-                    searchInfo.style.color = '#e74c3c';
-                } else {
-                    searchInfo.textContent = `Найдено разделов: ${visibleCount}`;
-                    searchInfo.style.color = '#27ae60';
-                }
-            } else {
+
+            if (count === 0) {
+                resultsBox.innerHTML = '<div class="global-no-results">Ничего не найдено. Попробуйте другой запрос.</div>';
                 searchInfo.textContent = '';
+            } else {
+                resultsBox.innerHTML = html;
+                searchInfo.textContent = `Найдено вопросов: ${count}`;
+                searchInfo.style.color = '#27ae60';
+            }
+        }
+
+        // Экранирование HTML
+        function escapeHtml(str) {
+            return str.replace(/[&<>"']/g, function(ch) {
+                return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch];
+            });
+        }
+
+        // Подсветка найденного фрагмента
+        function highlight(text, term) {
+            const safe = escapeHtml(text);
+            if (!term) return safe;
+            const safeTerm = escapeHtml(term).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            try {
+                return safe.replace(new RegExp('(' + safeTerm + ')', 'gi'), '<mark>$1</mark>');
+            } catch (e) {
+                return safe;
             }
         }
         
@@ -783,5 +891,6 @@ margin-bottom:20px;
             });
         });
     </script>
-</body>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"1954b47c125f43f8b4338b3c4f804e4f","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a04d02a29c603eae',t:'MTc4MDMwNDI0MQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
